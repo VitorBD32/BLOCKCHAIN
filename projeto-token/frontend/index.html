@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UESPI Token — Interface Web3</title>
+    <script src="ethers.umd.min.js"></script>
+    <style>
+        :root {
+            color-scheme: dark;
+            --bg: #0c0f14;
+            --card: #161b22;
+            --line: #2a3340;
+            --text: #f4f7fb;
+            --muted: #9aa6b2;
+            --accent: #f6851b;
+            --accent-2: #3d8bfd;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: radial-gradient(circle at top, #1a2330, var(--bg) 55%);
+            color: var(--text);
+        }
+        main {
+            width: min(520px, calc(100% - 32px));
+            margin: 40px auto 64px;
+        }
+        h1 { margin: 0 0 6px; font-size: 1.8rem; }
+        .subtitulo, .aviso, label, #status, #supply, #rede, .hash { color: var(--muted); }
+        .aviso {
+            background: #2a2116;
+            border: 1px solid #6b4a1e;
+            border-radius: 12px;
+            padding: 12px 14px;
+            margin: 18px 0;
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 16px;
+        }
+        button, input {
+            width: 100%;
+            border-radius: 10px;
+            font-size: 1rem;
+        }
+        input {
+            margin-top: 8px;
+            padding: 12px;
+            border: 1px solid var(--line);
+            background: #0e131a;
+            color: var(--text);
+        }
+        button {
+            margin-top: 14px;
+            padding: 12px 16px;
+            border: 0;
+            cursor: pointer;
+            background: var(--accent);
+            color: #1a1208;
+            font-weight: 700;
+        }
+        button.secundario { background: var(--accent-2); color: white; }
+        button:hover { filter: brightness(1.08); }
+        #saldo { font-size: 2rem; font-weight: 700; margin: 8px 0; }
+        .mono { font-family: Consolas, monospace; word-break: break-all; }
+        a { color: #8eb7ff; }
+        .linha { display: flex; justify-content: space-between; gap: 12px; margin-top: 8px; }
+        h2 { margin: 0 0 4px; font-size: 1.05rem; }
+    </style>
+</head>
+<body>
+    <main>
+        <p class="subtitulo">Fase 4 — Interface Web3 · Ethereum Sepolia</p>
+        <h1 id="nomeToken">Token UESPI</h1>
+        <p id="status">Carteira não conectada.</p>
+
+        <p class="aviso">
+            Contrato na Sepolia:
+            <span class="mono">0x7Afd1aacA2123646E25F48e0e9bEBae019370749</span>.
+            Abre esta página no Chrome onde a MetaMask está instalada.
+        </p>
+
+        <button id="btnConnect" onclick="conectarCarteira()">Conectar MetaMask</button>
+
+        <section id="painel" hidden>
+            <div class="card">
+                <div class="linha">
+                    <span id="rede">Rede: —</span>
+                    <span id="contaCurta" class="mono"></span>
+                </div>
+                <p id="saldo">—</p>
+                <p id="supply">Supply total: —</p>
+                <p class="mono" id="conta"></p>
+                <p>Contrato: <a id="linkContrato" class="mono" target="_blank" rel="noopener"></a></p>
+                <button class="secundario" onclick="atualizarSaldo()">Atualizar saldo</button>
+            </div>
+
+            <div class="card">
+                <h2>Transferir tokens</h2>
+                <label for="destino">Endereço de destino</label>
+                <input id="destino" type="text" placeholder="0x..." autocomplete="off">
+                <label for="quantidade">Quantidade</label>
+                <input id="quantidade" type="number" min="0" step="any" placeholder="10">
+                <button onclick="transferir()">Transferir</button>
+                <p id="txTransferencia" class="hash mono"></p>
+            </div>
+
+            <div class="card">
+                <h2>Funções extras</h2>
+                <p class="subtitulo">Mint exige a conta dona do contrato. Burn reduz o saldo da carteira conectada.</p>
+                <label for="mintDestino">Mint para</label>
+                <input id="mintDestino" type="text" placeholder="0x...">
+                <label for="mintQuantidade">Quantidade do mint</label>
+                <input id="mintQuantidade" type="number" min="0" step="any" placeholder="100">
+                <button class="secundario" onclick="mintar()">Mint</button>
+                <label for="burnQuantidade">Quantidade do burn</label>
+                <input id="burnQuantidade" type="number" min="0" step="any" placeholder="1">
+                <button class="secundario" onclick="queimar()">Burn</button>
+                <p id="txExtra" class="hash mono"></p>
+            </div>
+        </section>
+    </main>
+    <script src="app.js"></script>
+</body>
+</html>
